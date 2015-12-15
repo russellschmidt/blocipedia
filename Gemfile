@@ -34,3 +34,5 @@ gem 'turbolinks'
 
 # Install HAML for rails
 gem 'haml-rails', '~> 0.9'
+
+gem 'devise'
