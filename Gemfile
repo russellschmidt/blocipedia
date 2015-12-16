@@ -30,9 +30,12 @@ gem 'coffee-rails', '~> 4.1.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+# Removed to work with Foundation
 gem 'turbolinks'
 
 # Install HAML for rails
 gem 'haml-rails', '~> 0.9'
 
 gem 'devise'
+
+gem 'foundation-rails'
