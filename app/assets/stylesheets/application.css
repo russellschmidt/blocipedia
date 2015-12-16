@@ -14,3 +14,7 @@
  *= require_self
  *= require foundation_and_overrides
  */
+.name h1 {
+  color: #fff;
+  padding-left: 20px;
+}
