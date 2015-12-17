@@ -48,10 +48,14 @@
   border-top-left-radius: 0;
 }
 
-#top-box, #bottom-box {
+#top-box, #bottom-box, #wiki-box {
   margin-left: auto;
   margin-right: auto;
   padding: 40px;
+}
+
+#wiki-box {
+  margin-bottom: 20px;
 }
 
 #left-box {
