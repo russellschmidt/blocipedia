@@ -18,3 +18,9 @@
   color: #fff;
   padding-left: 20px;
 }
+
+/* Styling for welcome#index */
+.box {
+  margin: auto;
+  text-align: center;
+}
