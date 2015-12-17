@@ -14,6 +14,4 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require foundation
-//= require_tree .
-
-$(function(){ $(document).foundation(); });
+//= require blocipedia.js
