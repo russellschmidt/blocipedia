@@ -1,19 +1,26 @@
-.row.box
+.row.banner
   .small-12.columns.small-centered
     %h1 Blocipedia: Social, Markdown Wikis
-.row.box
-  .small-6.column.small-centered
-    %h4 Create and share Markdown Wikis
-.row.box
-  .small-6.columns.small-centered
-    - if user_signed_in?
-      %p Hello, #{current_user.email}!
-    - else
-      =link_to "Sign up", new_user_registration_path
-.row.box
-  .left.small-6.columns
+.row
+  .row
+    .small-6.column.small-centered.box#top-box
+      %h4 Create and share Markdown Wikis
+  .row
+    .small-6.columns.small-centered.box#bottom-box
+      - if user_signed_in?
+        %p Hello, #{current_user.email}!
+      - else
+        =link_to "Sign up", new_user_registration_path
+.row
+  .small-2.columns
+    %p
+  .small-3.columns.box#left-box
     %h4 Create as many public wikis as you want
     %button Free Plan
-  .right.small-6.columns
+  .small-2.columns
+    %p
+  .small-3.columns.box#right-box
     %h4 Create private wikis!
     %button Premium Plan
+  .small-2.columns
+    %p
