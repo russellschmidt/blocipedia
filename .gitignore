@@ -53,3 +53,6 @@ bower.json
 # Ignore pow environment settings
 .powenv
 >>>>>>> aa1db450395095051b5fd50cc11dbc63e4f238cb
+
+# Test coverage results are not tracked by git
+coverage

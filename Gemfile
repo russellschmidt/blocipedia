@@ -18,6 +18,11 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
 end
 
+group :test do
+  # test coverage reports
+  gem 'simplecov', require: false
+end
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -39,3 +44,5 @@ gem 'haml-rails', '~> 0.9'
 gem 'devise'
 
 gem 'foundation-rails'
+
+gem 'shoulda'
