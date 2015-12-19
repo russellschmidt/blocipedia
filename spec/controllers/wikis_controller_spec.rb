@@ -11,12 +11,15 @@ RSpec.describe WikisController, type: :controller do
 
   # TODO not a permanent home
   describe "user logins" do
-    it "can sign up" do
+    it "can sign up and create an account" do
+      expect { post :create, user: my_user }.to change(User, :count).by(1)
       # not nil
       # database size  +1
     end
 
-    it "can sign in" do
+    it "can sign in and create a session" do
+      sign_in my_user
+      expect(subject.current_user[:id]).to eq (my_user.id)
       # current_user eq my_user
       # subject.current_user
       # also redirect to index
@@ -53,31 +56,50 @@ RSpec.describe WikisController, type: :controller do
   end
 
   describe "GET #new" do
-    it "returns http success" do
-      get :new
-      expect(response).to have_http_status(:success)
+    context "for signed in user" do
+      before(:each) do
+        sign_in my_user
+      end
+
+      it "returns http success" do
+        get :new
+        expect(response).to have_http_status(:success)
+      end
+
+      it "renders the #new view" do
+        get :new
+        expect(response).to render_template :new
+      end
     end
 
-    it "renders the #new view" do
-      get :new
-      expect(response).to render_template :new
+    context "for non-signed-in (unauthorized) user" do
+
+      it "redirects to sign up page"  do
+        get :new
+        expect(response).to redirect_to(new_user_session_path)
+      end
     end
   end
 
   describe "POST create" do
-    it "increases the number of wikis by 1" do
-      expect{post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}}.to change(Wiki, :count).by(1)
-    end
+    context "for signed in user" do
+      before(:each) do
+        sign_in my_user
+      end
 
-    it "assigns the new wiki to @wiki" do
-      sign_in my_user
-      post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}
-      expect(assigns(:wiki)).to eq Wiki.last
-    end
+      it "increases the number of wikis by 1" do
+        expect{post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}}.to change(Wiki, :count).by(1)
+      end
 
-    it "redirects to the new wiki" do
-      post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}
-      expect(response).to redirect_to Wiki.last
+      it "assigns the new wiki to @wiki" do
+        post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}
+        expect(assigns(:wiki)).to eq Wiki.last
+      end
+
+      it "redirects to the new wiki" do
+        post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}
+        expect(response).to redirect_to Wiki.last
+      end
     end
   end
 
@@ -133,7 +155,7 @@ RSpec.describe WikisController, type: :controller do
     it "deletes the wiki" do
       delete :destroy, {id: my_wiki.id}
       count = Wiki.where({id: my_wiki.id}).size
-      expect(count). eq 0
+      expect(count).to eq(0)
     end
 
     it "redirects to wiki index" do
