@@ -4,6 +4,7 @@ include RandomData
 RSpec.describe WikisController, type: :controller do
   let(:my_user) {User.create!(email:"new_user@aol.com", password:"password", confirmed_at: Time.now)}
   let(:my_wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user)}
+
   before(:each) do
       @request.env["devise.mapping"] = Devise.mappings[:user]
   end
@@ -68,7 +69,7 @@ RSpec.describe WikisController, type: :controller do
       expect{post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}}.to change(Wiki, :count).by(1)
     end
 
-    it "assigns the new wiki to @wiki", focus: true do
+    it "assigns the new wiki to @wiki" do
       sign_in my_user
       post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}
       expect(assigns(:wiki)).to eq Wiki.last
