@@ -32,6 +32,24 @@
         </ul>
       </section>
     </nav>
+
+    <%if flash[:notice] %>
+      <div data-alert class="alert-box success">
+        <a href="#" class="close">&times;</a>
+        <%= flash[:notice] %>
+      </div>
+    <% elsif flash.now[:alert] %>
+      <div data-alert class="alert-box alert">
+        <a href="#" class="close">&times;</a>
+        <%= flash.now[:alert] %>
+      </div>
+    <% elsif flash[:alert] %>
+      <div data-alert class="alert-box warning">
+        <a href"#" class="close">&times;</a>
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
     <div class="row">
       <div class="12-large column">
         <%= yield %>
