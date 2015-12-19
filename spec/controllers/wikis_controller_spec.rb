@@ -2,8 +2,25 @@ require 'rails_helper'
 include RandomData
 
 RSpec.describe WikisController, type: :controller do
-  let(:my_user) {User.create!(email:"new_user@aol.com", password:"password")}
+  let(:my_user) {User.create!(email:"new_user@aol.com", password:"password", confirmed_at: Time.now)}
   let(:my_wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user)}
+  before(:each) do
+      @request.env["devise.mapping"] = Devise.mappings[:user]
+  end
+
+  # TODO not a permanent home
+  describe "user logins" do
+    it "can sign up" do
+      # not nil
+      # database size  +1
+    end
+
+    it "can sign in" do
+      # current_user eq my_user
+      # subject.current_user
+      # also redirect to index
+    end
+  end
 
   describe "GET #index" do
     it "returns http success" do
@@ -51,7 +68,8 @@ RSpec.describe WikisController, type: :controller do
       expect{post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}}.to change(Wiki, :count).by(1)
     end
 
-    it "assigns the new wiki to @wiki" do
+    it "assigns the new wiki to @wiki", focus: true do
+      sign_in my_user
       post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}
       expect(assigns(:wiki)).to eq Wiki.last
     end
