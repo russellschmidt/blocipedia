@@ -11,12 +11,15 @@ RSpec.describe WikisController, type: :controller do
 
   # TODO not a permanent home
   describe "user logins" do
-    it "can sign up" do
+    it "can sign up and create an account" do
+      expect { post :create, user: my_user }.to change(User, :count).by(1)
       # not nil
       # database size  +1
     end
 
-    it "can sign in" do
+    it "can sign in and create a session" do
+      sign_in my_user
+      expect(subject.current_user[:id]).to eq (my_user.id)
       # current_user eq my_user
       # subject.current_user
       # also redirect to index
