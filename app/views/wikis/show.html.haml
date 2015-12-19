@@ -1,2 +1,18 @@
-%h1 Wikis#show
-%p Find me in app/views/wikis/show.html.haml
+.row
+  .row
+    %h1
+      = @wiki.title
+  .row
+    %p
+      = @wiki.body
+  .row
+    .small-2.columns
+      %h5
+        - if @wiki.private
+          Private Wiki
+        - else
+          Public Wiki
+    .small-10.columns
+      %h5 Author: #{@wiki.user.email}
+  .row
+    = link_to 'Back', wikis_path, class: "button"
