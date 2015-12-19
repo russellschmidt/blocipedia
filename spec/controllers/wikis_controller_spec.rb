@@ -2,7 +2,7 @@ require 'rails_helper'
 include RandomData
 
 RSpec.describe WikisController, type: :controller do
-  let(:my_user) {User.create!(email:"reuvenschmidt@gmail.com", password:"12344321")}
+  let(:my_user) {User.create!(email:"new_user@aol.com", password:"password")}
   let(:my_wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user)}
 
   describe "GET #index" do
