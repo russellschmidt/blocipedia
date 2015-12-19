@@ -16,3 +16,5 @@
       %h5 Author: #{@wiki.user.email}
   .row
     = link_to 'Back', wikis_path, class: "button"
+    = link_to 'Edit', edit_wiki_path(@wiki), class: "button info"
+    = link_to 'Delete', @wiki, method: :delete, class: "button alert"
