@@ -1,15 +1,3 @@
 .row
   %h1.title New Wiki
-.row
-  =form_for @wiki do |f|
-    .row
-      =f.label :title
-      =f.text_field :title
-    .row
-      =f.label :body
-      =f.text_area :body
-    .row
-      =f.label :private
-      =f.check_box :private
-    .row
-      =f.submit "Save", class:"button small"
+=render partial: "form", locals: {wiki: @wiki}
