@@ -19,7 +19,7 @@ RSpec.describe Wiki, type: :model do
     end
 
     it "should respond to user" do
-      exepct(wiki).to respond_to(:user)
+      expect(wiki).to respond_to(:user)
     end
   end
 
