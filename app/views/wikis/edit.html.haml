@@ -1,16 +1,3 @@
 .row
   %h1 Edit Wiki
-.row
-  = form_for @wiki do |f|
-    .row
-      = f.label :title
-      = f.text_field :title, placeholder: "The Wiki Title"
-    .row
-      = f.label :body
-      = f.text_area :body, placeholder: "The wiki content goes here."
-    .row
-      = f.label :private
-      = f.check_box :private
-    .row
-      = f.submit "Save", class: "button info"
-      = link_to "Cancel", wiki_path(@wiki), class: "button"
+=render partial: "form", locals: {wiki: @wiki}
