@@ -26,6 +26,8 @@ RSpec.describe WikisController, type: :controller do
     end
   end
 
+  # End TODO ##########
+
   describe "GET #index" do
     it "returns http success" do
       get :index
