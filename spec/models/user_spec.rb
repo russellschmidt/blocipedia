@@ -6,6 +6,11 @@ RSpec.describe User, type: :model do
   describe "valid user" do
     it { should validate_presence_of(:email) }
     it { should validate_presence_of(:password) }
+    it { should validate_presence_of(:role) }
+
+    it "should have a default role of standard" do
+      expect(new_user.role).to eq 0
+    end
 
     #it "valid logged in user is current_user" do
     #  expect(new_user.email).to equal(current_user.email)
