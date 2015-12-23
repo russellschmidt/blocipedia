@@ -18,4 +18,4 @@
     = link_to 'Back', wikis_path, class: "button"
     = link_to 'Edit', edit_wiki_path(@wiki), class: "button info"
     - if policy(@wiki).destroy?
-      = link_to 'Delete', @wiki, method: :delete, class: "button alert"
+      = link_to 'Delete', @wiki, method: :delete, class: "button alert", data: {confirm: "are you sure? delete is forever"}
