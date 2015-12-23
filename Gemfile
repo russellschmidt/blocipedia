@@ -46,3 +46,5 @@ gem 'devise'
 gem 'foundation-rails'
 
 gem 'shoulda'
+
+gem 'pundit'
