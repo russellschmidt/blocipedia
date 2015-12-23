@@ -2,7 +2,7 @@ require 'rails_helper'
 include RandomData
 
 RSpec.describe WikisController, type: :controller do
-  let(:my_user) {User.create!(email:"new_user@aol.com", password:"password", confirmed_at: Time.now)}
+  let(:my_user) {User.create!(email:"new_user@aol.com", password:"password", role: "standard", confirmed_at: Time.now)}
   let(:my_wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user)}
 
   before(:each) do
@@ -154,15 +154,33 @@ RSpec.describe WikisController, type: :controller do
   end
 
   describe "DELETE destroy" do
-    it "deletes the wiki" do
-      delete :destroy, {id: my_wiki.id}
-      count = Wiki.where({id: my_wiki.id}).size
-      expect(count).to eq(0)
+    context "authorized user" do
+      it "deletes the wiki" do
+        delete :destroy, {id: my_wiki.id}
+        count = Wiki.where({id: my_wiki.id}).size
+        expect(count).to eq(0)
+      end
+
+      it "redirects to wiki index" do
+        delete :destroy, {id: my_wiki.id}
+        expect(response).to redirect_to wikis_path
+      end
     end
 
-    it "redirects to wiki index" do
-      delete :destroy, {id: my_wiki.id}
-      expect(response).to redirect_to wikis_path
+    context "unauthorized user" do
+      before(:each) do
+        my_user = nil
+      end
+
+      it "does not delete the wiki" do
+        count = Wiki.where({id: my_wiki.id}).size
+        expect(count).to eq(1)
+      end
+
+      it "redirects to wiki index" do
+        delete :destroy, {id: my_wiki.id}
+        expect(response).to redirect_to wikis_path
+      end
     end
   end
 

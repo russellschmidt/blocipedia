@@ -6,19 +6,16 @@ class WikisController < ApplicationController
   end
 
   def show
-    @wiki = Wiki.find(params[:id])
+    wiki_finder
   end
 
   def new
+    # could put in 'authorize @user' but that seems to be handled by before_action callback already
     @wiki = Wiki.new
   end
 
   def create
-    @wiki = Wiki.new
-    @wiki.title = params[:wiki][:title]
-    @wiki.body = params[:wiki][:body]
-    @wiki.private = params[:wiki][:private]
-    @wiki.user = current_user
+    @wiki = Wiki.new(wiki_params.merge(user_id: current_user.id))
 
     if @wiki.save
       flash[:notice] = "Wiki saved"
@@ -30,15 +27,12 @@ class WikisController < ApplicationController
   end
 
   def edit
-    @wiki = Wiki.find(params[:id])
+    wiki_finder
   end
 
   def update
-    @wiki = Wiki.find(params[:id])
-    @wiki.title = params[:wiki][:title]
-    @wiki.body = params[:wiki][:body]
-    @wiki.private = params[:wiki][:private]
-    #@wiki.user = params[:current_user]
+    wiki_finder
+    @wiki.update_attributes(wiki_params)
 
     if @wiki.save
       flash[:notice] = "Wiki was updated"
@@ -50,8 +44,8 @@ class WikisController < ApplicationController
   end
 
   def destroy
-    @wiki = Wiki.find(params[:id])
-
+    wiki_finder
+    authorize @wiki
     if @wiki.destroy
       flash[:notice] = "\"#{@wiki.title}\" was deleted successfully"
       redirect_to wikis_path
@@ -60,4 +54,22 @@ class WikisController < ApplicationController
       render :show
     end
   end
+
+  #This goes all by its lonesome
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
+  private
+  def wiki_finder
+    @wiki = Wiki.find(params[:id])
+  end
+
+  def wiki_params
+    params.require(:wiki).permit(:title, :body, :private)
+  end
+
+  def user_not_authorized
+    flash[:alert] = "You are not authorized to perform this action"
+    redirect_to wikis_path
+  end
+
 end

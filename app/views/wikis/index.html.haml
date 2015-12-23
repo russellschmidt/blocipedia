@@ -6,7 +6,8 @@
       =link_to wiki.title, wiki, class: "wiki-title"
     .small-1.column
       =link_to "Edit", edit_wiki_path(wiki), class:"button tiny info"
-    .small-1.column
-      =link_to "Delete", wiki, method: :delete, class:"button tiny alert"
+    - if policy(wiki).destroy?
+      .small-1.column
+        =link_to "Delete", wiki, method: :delete, class:"button tiny alert", data: {confirm: "are you sure? delete is forever."}
 .row
   = link_to 'New Wiki', new_wiki_path, class: "button"

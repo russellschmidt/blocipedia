@@ -2,7 +2,7 @@ require 'rails_helper'
 include RandomData
 
 RSpec.describe Wiki, type: :model do
-  let(:user) {User.create!(email: RandomData.random_email, password: RandomData.random_password)}
+  let(:user) {User.create!(email: RandomData.random_email, password: RandomData.random_password, confirmed_at: Time.now)}
   let(:wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: user)}
 
   describe "Wiki attributes" do
