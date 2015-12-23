@@ -14,7 +14,7 @@ class WikisController < ApplicationController
   end
 
   def create
-    @wiki = Wiki.new(wiki_params)
+    @wiki = Wiki.new(wiki_params).merge(user_id: current_user.id)
 
     if @wiki.save
       flash[:notice] = "Wiki saved"
@@ -60,7 +60,7 @@ class WikisController < ApplicationController
   end
 
   def wiki_params
-    params.require(:wiki).permit(:title, :body, :private).merge(user_id: current_user.id)
+    params.require(:wiki).permit(:title, :body, :private)
   end
 
 end
