@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:new_user) { User.create!(email: 'newUser@aol.com', password:'password')}
+  let(:new_user) { User.create!(email: 'newUser@aol.com', password:'password', confirmed_at: Time.now)}
 
   describe "valid user" do
     context "standard user role" do
       it { should validate_presence_of(:email) }
       it { should validate_presence_of(:password) }
-  
+
       it "should have a default role of standard" do
         expect(new_user.role).to eq "standard"
       end

@@ -10,6 +10,7 @@ class WikisController < ApplicationController
   end
 
   def new
+    # could put in 'authorize @user' but that seems to be handled by before_action callback already
     @wiki = Wiki.new
   end
 
