@@ -1,4 +1,6 @@
 class WikiPolicy < ApplicationPolicy
+  # note that user is being passed from current_user for this gem
+
   attr_reader :user, :wiki
 
   def initialize(user, wiki)
@@ -31,7 +33,7 @@ class WikiPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.admin? || user.id == wiki.user.user_id
+    user.admin? || user.id == wiki.user_id
   end
 
   def scope

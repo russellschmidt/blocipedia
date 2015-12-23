@@ -14,7 +14,7 @@ class WikisController < ApplicationController
   end
 
   def create
-    @wiki = Wiki.new(wiki_params).merge(user_id: current_user.id)
+    @wiki = Wiki.new(wiki_params.merge(user_id: current_user.id))
 
     if @wiki.save
       flash[:notice] = "Wiki saved"
@@ -44,7 +44,7 @@ class WikisController < ApplicationController
 
   def destroy
     wiki_finder
-
+    authorize @wiki
     if @wiki.destroy
       flash[:notice] = "\"#{@wiki.title}\" was deleted successfully"
       redirect_to wikis_path
@@ -54,6 +54,9 @@ class WikisController < ApplicationController
     end
   end
 
+  #This goes all by its lonesome
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
   private
   def wiki_finder
     @wiki = Wiki.find(params[:id])
@@ -61,6 +64,11 @@ class WikisController < ApplicationController
 
   def wiki_params
     params.require(:wiki).permit(:title, :body, :private)
+  end
+
+  def user_not_authorized
+    flash[:alert] = "You are not authorized to perform this action"
+    redirect_to wikis_path
   end
 
 end
