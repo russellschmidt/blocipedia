@@ -169,7 +169,7 @@ RSpec.describe WikisController, type: :controller do
 
     context "unauthorized user" do
       before(:each) do
-        my_user = User.create!(email: "bad_email@aol.com", password: "password", role: "standard", confirmed_at: Time.now)
+        my_user = nil
       end
 
       it "does not delete the wiki" do
