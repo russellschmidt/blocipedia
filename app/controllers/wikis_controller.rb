@@ -1,12 +1,14 @@
 class WikisController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  before_action :authenticate_user!, only: [:new, :create, :destroy]
+  before_action :ready_wiki, only: [:show, :edit, :update, :destroy]
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def index
     @wikis = Wiki.all
   end
 
   def show
-    @wiki = Wiki.find(params[:id])
   end
 
   def new
@@ -14,11 +16,7 @@ class WikisController < ApplicationController
   end
 
   def create
-    @wiki = Wiki.new
-    @wiki.title = params[:wiki][:title]
-    @wiki.body = params[:wiki][:body]
-    @wiki.private = params[:wiki][:private]
-    @wiki.user = current_user
+    @wiki = Wiki.new(wiki_params.merge(user_id: current_user.id))
 
     if @wiki.save
       flash[:notice] = "Wiki saved"
@@ -30,15 +28,10 @@ class WikisController < ApplicationController
   end
 
   def edit
-    @wiki = Wiki.find(params[:id])
   end
 
   def update
-    @wiki = Wiki.find(params[:id])
-    @wiki.title = params[:wiki][:title]
-    @wiki.body = params[:wiki][:body]
-    @wiki.private = params[:wiki][:private]
-    #@wiki.user = params[:current_user]
+    @wiki.update_attributes(wiki_params)
 
     if @wiki.save
       flash[:notice] = "Wiki was updated"
@@ -50,8 +43,7 @@ class WikisController < ApplicationController
   end
 
   def destroy
-    @wiki = Wiki.find(params[:id])
-
+    authorize @wiki
     if @wiki.destroy
       flash[:notice] = "\"#{@wiki.title}\" was deleted successfully"
       redirect_to wikis_path
@@ -60,4 +52,20 @@ class WikisController < ApplicationController
       render :show
     end
   end
+
+
+  private
+  def ready_wiki
+    @wiki = Wiki.find(params[:id])
+  end
+
+  def wiki_params
+    params.require(:wiki).permit(:title, :body, :private)
+  end
+
+  def user_not_authorized
+    flash[:alert] = "You are not authorized to perform this action"
+    redirect_to wikis_path
+  end
+
 end
