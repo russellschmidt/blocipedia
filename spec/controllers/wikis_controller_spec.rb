@@ -155,6 +155,10 @@ RSpec.describe WikisController, type: :controller do
 
   describe "DELETE destroy" do
     context "authorized user" do
+      before(:each) do
+        sign_in my_user
+      end
+
       it "deletes the wiki" do
         delete :destroy, {id: my_wiki.id}
         count = Wiki.where({id: my_wiki.id}).size
