@@ -1,16 +1,17 @@
 class WikisController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  before_action :authenticate_user!, only: [:new, :create, :destroy]
+  before_action :ready_wiki, only: [:show, :edit, :update, :destroy]
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def index
     @wikis = Wiki.all
   end
 
   def show
-    wiki_finder
   end
 
   def new
-    # could put in 'authorize @user' but that seems to be handled by before_action callback already
     @wiki = Wiki.new
   end
 
@@ -27,11 +28,9 @@ class WikisController < ApplicationController
   end
 
   def edit
-    wiki_finder
   end
 
   def update
-    wiki_finder
     @wiki.update_attributes(wiki_params)
 
     if @wiki.save
@@ -44,7 +43,6 @@ class WikisController < ApplicationController
   end
 
   def destroy
-    wiki_finder
     authorize @wiki
     if @wiki.destroy
       flash[:notice] = "\"#{@wiki.title}\" was deleted successfully"
@@ -55,11 +53,9 @@ class WikisController < ApplicationController
     end
   end
 
-  #This goes all by its lonesome
-  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   private
-  def wiki_finder
+  def ready_wiki
     @wiki = Wiki.find(params[:id])
   end
 
