@@ -1,6 +1,6 @@
 # FactoryGirl for users
 
-10.times do
+6.times do
   FactoryGirl.create(:user)
 end
 
@@ -12,10 +12,29 @@ User.create!(
 )
 
 users = User.all
+puts "#{User.count} users created"
 
-30.times do
-  FactoryGirl.create(:wiki)
+20.times do
+  Wiki.create!(
+    title: Faker::Hipster.sentence,
+    body: Faker::Hipster.paragraph(2, true, 5),
+    private: false,
+    user: users.sample
+  )
 end
+
+User.where(role: 'premium').find_each do |pay_user|
+  2.times do
+    Wiki.create!(
+      title: Faker::Hipster.sentence,
+      body: Faker::Hipster.paragraph(2, true, 5),
+      private: true,
+      user: pay_user
+    )
+  end
+end
+
+puts "#{Wiki.count} wikis created"
 
 =begin
 
@@ -45,28 +64,4 @@ u = User.create!(
 )
 u.admin!
 
-users = User.all
-puts "#{User.count} users created"
-
-25.times do
-  Wiki.create!(
-    title: RandomData.random_sentence,
-    body: RandomData.random_paragraph,
-    private: false,
-    user: users.sample
-  )
-end
-
-User.where(role: 'premium').find_each do |pay_user|
-  rand(3).times do
-    Wiki.create!(
-      title: RandomData.random_sentence,
-      body: RandomData.random_paragraph,
-      private: true,
-      user: pay_user
-    )
-  end
-end
-
-puts "#{Wiki.count} wikis created"
 =end
