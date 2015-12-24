@@ -14,23 +14,7 @@ User.create!(
 users = User.all
 
 30.times do
-  Wiki.create!(
-    title: Faker::Hipster.sentence,
-    body: Faker::Hipster.paragraph(2, true, 5),
-    private: false,
-    user: users.sample,
-  )
-end
-
-User.where(role: 1).find_each do |user|
-  3.times do
-    Wiki.create!(
-      title: Faker::Hipster.sentence,
-      body: Faker::Hipster.paragraph(2, true, 5),
-      private: true,
-      user: user
-    )
-  end
+  FactoryGirl.create(:wiki)
 end
 
 =begin
