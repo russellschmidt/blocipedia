@@ -1,20 +1,7 @@
-# create Standard users
-5.times do
-  User.create!(
-    email: Faker::Internet.email,
-    password: Faker::Internet.password(8,12),
-    confirmed_at: Faker::Time.between(DateTime.now - 10, DateTime.now)
-  )
-end
+# FactoryGirl for users
 
-#create Premium users
-3.times do
-  User.create!(
-    email: Faker::Internet.email,
-    password: Faker::Internet.password(8,12),
-    role: 'premium',
-    confirmed_at: Faker::Time.between(DateTime.now - 10, DateTime.now)
-  )
+10.times do
+  FactoryGirl.create(:user)
 end
 
 #create my admin account
@@ -24,24 +11,24 @@ User.create!(
   role: 'admin'
 )
 
-users_all = User.all
+users = User.all
 
-25.times do
+30.times do
   Wiki.create!(
     title: Faker::Hipster.sentence,
     body: Faker::Hipster.paragraph(2, true, 5),
     private: false,
-    user: users_all.sample,
+    user: users.sample,
   )
 end
 
-users_premium = User.where(role: 1).find_each do |premium_user|
+User.where(role: 1).find_each do |user|
   3.times do
     Wiki.create!(
       title: Faker::Hipster.sentence,
       body: Faker::Hipster.paragraph(2, true, 5),
       private: true,
-      user: premium_user
+      user: user
     )
   end
 end
