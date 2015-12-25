@@ -1,7 +1,7 @@
 require 'faker'
 
 FactoryGirl.define do
-  factory :wiki do
+  factory :public_wiki, class: Wiki do
     title       { Faker::Hipster.sentence }
     body        { Faker::Hipster.paragraph(2, true, 5) }
     user        { User.find(rand(User.count) + 1) }
@@ -10,3 +10,12 @@ FactoryGirl.define do
 end
 
 # note that tables start IDs with 1 and not 0
+
+FactoryGirl.define do
+  factory :private_wiki, class: Wiki do
+    title       { Faker::Hipster.sentence }
+    body        { Faker::Hipster.paragraph(2, true, 5) }
+    user        { User.where(role: 'premium').sample }
+    private     true
+  end
+end
