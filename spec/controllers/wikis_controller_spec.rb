@@ -2,8 +2,11 @@ require 'rails_helper'
 include RandomData
 
 RSpec.describe WikisController, type: :controller do
-  let(:my_user) {User.create!(email:"new_user@aol.com", password:"password", role: "standard", confirmed_at: Time.now)}
-  let(:my_wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user)}
+  let(:my_user) {create(:standard_user)}
+  let(:my_wiki) {create(:public_wiki, user: my_user)}
+
+  #let(:my_user) {User.create!(email:"new_user@aol.com", password:"password", role: "standard", confirmed_at: Time.now)}
+  #let(:my_wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user)}
 
   before(:each) do
       @request.env["devise.mapping"] = Devise.mappings[:user]

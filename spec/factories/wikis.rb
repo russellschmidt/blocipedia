@@ -4,7 +4,7 @@ FactoryGirl.define do
   factory :public_wiki, class: Wiki do
     title       { Faker::Hipster.sentence }
     body        { Faker::Hipster.paragraph(2, true, 5) }
-    user        { User.find(rand(User.count) + 1) }
+    user        { User.find(rand(1..User.count)) }
     private     false
   end
 end
