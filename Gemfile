@@ -50,3 +50,5 @@ gem 'foundation-rails'
 gem 'shoulda'
 
 gem 'pundit'
+
+gem 'stripe'
