@@ -75,7 +75,6 @@ RSpec.describe WikisController, type: :controller do
     end
 
     context "for non-signed-in (unauthorized) user" do
-
       it "redirects to sign up page"  do
         get :new
         expect(response).to redirect_to(new_user_session_path)
@@ -101,6 +100,13 @@ RSpec.describe WikisController, type: :controller do
       it "redirects to the new wiki" do
         post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}
         expect(response).to redirect_to Wiki.last
+      end
+    end
+
+    context "for non-signed-in (unauthorized) user" do
+      it "redirects to sign up page"  do
+        post :create
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
@@ -154,7 +160,11 @@ RSpec.describe WikisController, type: :controller do
   end
 
   describe "DELETE destroy" do
-    context "authorized user" do
+    context "for signed in user" do
+      before(:each) do
+        sign_in my_user
+      end
+
       it "deletes the wiki" do
         delete :destroy, {id: my_wiki.id}
         count = Wiki.where({id: my_wiki.id}).size
@@ -179,9 +189,8 @@ RSpec.describe WikisController, type: :controller do
 
       it "redirects to wiki index" do
         delete :destroy, {id: my_wiki.id}
-        expect(response).to redirect_to wikis_path
+        expect(response).to redirect_to new_user_session_path
       end
     end
   end
-
 end
