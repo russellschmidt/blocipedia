@@ -2,8 +2,11 @@ require 'rails_helper'
 include RandomData
 
 RSpec.describe WikisController, type: :controller do
-  let(:my_user) {User.create!(email:"new_user@aol.com", password:"password", role: "standard", confirmed_at: Time.now)}
-  let(:my_wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user)}
+  let(:my_user) {create(:standard_user)}
+  let(:my_wiki) {create(:public_wiki, user: my_user)}
+
+  #let(:my_user) {User.create!(email:"new_user@aol.com", password:"password", role: "standard", confirmed_at: Time.now)}
+  #let(:my_wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user)}
 
   before(:each) do
       @request.env["devise.mapping"] = Devise.mappings[:user]
@@ -75,7 +78,6 @@ RSpec.describe WikisController, type: :controller do
     end
 
     context "for non-signed-in (unauthorized) user" do
-
       it "redirects to sign up page"  do
         get :new
         expect(response).to redirect_to(new_user_session_path)
@@ -101,6 +103,13 @@ RSpec.describe WikisController, type: :controller do
       it "redirects to the new wiki" do
         post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}
         expect(response).to redirect_to Wiki.last
+      end
+    end
+
+    context "for non-signed-in (unauthorized) user" do
+      it "redirects to sign up page"  do
+        post :create
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end
@@ -154,7 +163,11 @@ RSpec.describe WikisController, type: :controller do
   end
 
   describe "DELETE destroy" do
-    context "authorized user" do
+    context "for signed in user" do
+      before(:each) do
+        sign_in my_user
+      end
+
       it "deletes the wiki" do
         delete :destroy, {id: my_wiki.id}
         count = Wiki.where({id: my_wiki.id}).size
@@ -179,9 +192,8 @@ RSpec.describe WikisController, type: :controller do
 
       it "redirects to wiki index" do
         delete :destroy, {id: my_wiki.id}
-        expect(response).to redirect_to wikis_path
+        expect(response).to redirect_to new_user_session_path
       end
     end
   end
-
 end
