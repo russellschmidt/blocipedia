@@ -1,8 +1,18 @@
 <%= form_tag charges_path do %>
-  <h4>Click this button</h4>
+  <h4>Upgrade to Premium</h4>
+  <h5>Benefits include:</h5>
+  <ul>
+    <li>Create your own Private content</li>
+    <li>Access to Private content</li>
+    <li>Create and control custom edit lists</li>
+    <li>Bragging rights</li>
+  </ul>
   <script class='stripe-button' src="https://checkout.stripe.com/checkout.js"
    data-key="<%= @stripe_btn_data[:key] %>"
    data-amount="<%= @stripe_btn_data[:amount] %>"
    data-description="<%= @stripe_btn_data[:description] %>">
   </script>
 <% end %>
+<p>
+  <small>By purchasing an upgrade, you agree to the following terms and conditions. All payments are non-refundable. We are not responsible for literally anything on this website. You agree to hold us harmless from any damages, real or imagined, incurred in any way through this site. You agree to only say nice things about us. You understand that use of our site is at our discretion and can be cancelled or revoked at any time. You agree that any disputes with us for anything will be handled by a mediator of our choosing in a location of our choosing. Mediation costs will be born by the user.</small>
+</p>

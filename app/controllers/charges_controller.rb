@@ -38,6 +38,8 @@ class ChargesController < ApplicationController
   end
 end
 
+
+private
 def upgrade_to_premium
   user = User.find(current_user.id)
   user.premium! ? true : false
