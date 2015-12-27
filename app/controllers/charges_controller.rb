@@ -1,5 +1,5 @@
 class ChargesController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  before_action :authenticate_user!, only: [:new, :create, :downgrade]
 
   def new
     @stripe_btn_data = {
@@ -36,6 +36,22 @@ class ChargesController < ApplicationController
     flash[:error] = e.message
     redirect_to new_charge_path
   end
+
+
+  def downgrade
+    #customer = Stripe::Customer.retrieve("#{current_user.email}")
+
+    if downgrade_to_standard
+      flash[:notice] = "Account downgraded, #{current_user.email}. Thank you."
+    else
+      flash[:notice] = "Partial refund granted but database error occurred. Please contact support."
+    end
+    redirect_to wikis_path
+
+  rescue Stripe::CardError => e
+    flash[:error] = e.message
+    redirect_to edit_user_registration_path
+  end
 end
 
 
@@ -43,4 +59,9 @@ private
 def upgrade_to_premium
   user = User.find(current_user.id)
   user.premium! ? true : false
+end
+
+def downgrade_to_standard
+  user = User.find(current_user.id)
+  user.standard! ? true : false
 end
