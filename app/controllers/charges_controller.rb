@@ -1,4 +1,14 @@
 class ChargesController < ApplicationController
+  before_action :authenticate_user!, only: [:new, :create]
+
+  def new
+    @stripe_btn_data = {
+      key: "#{ Rails.configuration.stripe[:publishable_key] }",
+      description: "Blocipedia Premium for #{current_user.email}",
+      amount: 1500
+    }
+  end
+
   def create
     customer = Stripe::Customer.create(
       email: current_user.email,
@@ -9,7 +19,7 @@ class ChargesController < ApplicationController
       # this is the Stripe customer object ID
       customer: customer.id,
       # must be in cents
-      amount: Amount.default,
+      amount: 1500,  #Amount.default
       description: "Blocipedia Premium for #{current_user.email}",
       currency: 'usd'
     )
