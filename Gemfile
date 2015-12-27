@@ -52,3 +52,4 @@ gem 'shoulda'
 gem 'pundit'
 
 gem 'stripe'
+gem 'figaro', '~>1.0'

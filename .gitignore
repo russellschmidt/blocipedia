@@ -56,3 +56,6 @@ bower.json
 
 # Test coverage results are not tracked by git
 coverage
+
+# Ignore application configuration
+/config/application.yml
