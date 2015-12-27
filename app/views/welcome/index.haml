@@ -20,11 +20,11 @@
     %p
   .small-3.columns.box#left-box
     %h4 Create as many public wikis as you want
-    %button Free Plan
+    =link_to 'Create Free Plan', new_user_registration_path, class: 'button'
   .small-2.columns
     %p
   .small-3.columns.box#right-box
     %h4 Create private wikis!
-    %button Premium Plan
+    =link_to 'Premium Plan $15', new_charge_path, class: 'button'
   .small-2.columns
     %p

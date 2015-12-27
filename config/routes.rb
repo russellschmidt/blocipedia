@@ -1,9 +1,7 @@
 Rails.application.routes.draw do
-  resources :charges, only: [:new, :create]
-
   resources :wikis
-
   devise_for :users
+  resources :charges, only: [:new, :create]
   root 'welcome#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

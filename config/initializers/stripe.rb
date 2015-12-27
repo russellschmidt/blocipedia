@@ -4,5 +4,5 @@ Rails.configuration.stripe = {
   secret_key: ENV['STRIPE_SECRET_KEY']
 }
 
-# connect the secret key we stored in our app with Stripe
+# set the app-stored secret key with Stripe
 Stripe.api_key = Rails.configuration.stripe[:secret_key]

@@ -24,7 +24,7 @@ class ChargesController < ApplicationController
       currency: 'usd'
     )
 
-    flash[:notice] = "Payment successful #{current_user.email}! Thanks"
+    flash[:notice] = "Payment successful #{current_user.email}! Thank you."
     redirect_to wikis_path
 
   rescue Stripe::CardError => e
