@@ -6,9 +6,11 @@ class ChargesController < ApplicationController
     )
 
     charge = Stripe::Charge.create(
+      # this is the Stripe customer object ID
       customer: customer.id,
+      # must be in cents
       amount: Amount.default,
-      description: "Blocipedia Premium - #{current_user.email}",
+      description: "Blocipedia Premium for #{current_user.email}",
       currency: 'usd'
     )
 
