@@ -39,8 +39,6 @@ class ChargesController < ApplicationController
 
 
   def downgrade
-    #customer = Stripe::Customer.retrieve("#{current_user.email}")
-
     if downgrade_to_standard
       flash[:notice] = "Account downgraded, #{current_user.email}. Thank you."
     else
