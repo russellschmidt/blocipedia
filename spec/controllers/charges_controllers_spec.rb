@@ -40,6 +40,19 @@ RSpec.describe ChargesController, type: :controller do
         })
         expect(customer.email).to eq(my_user.email)
       end
+
+      it "generates a $15 charge" do
+        customer = Stripe::Customer.create({
+          email: my_user.email,
+          card: stripe_helper.generate_card_token({ number: "4242424242424242", brand: 'Visa'})
+        })
+        charge = Stripe::Charge.create({
+          customer: customer.id,
+          amount: 1500,
+          currency: 'usd'
+        })
+        expect(charge.amount).to eq 1500
+      end
     end
 
     context "for guest user" do
