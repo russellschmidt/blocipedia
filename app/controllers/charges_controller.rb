@@ -30,7 +30,7 @@ class ChargesController < ApplicationController
     )
 
     # change user to premium
-    if upgrade_to_premium
+    if User.upgrade(current_user)
       flash[:notice] = "Welcome to Premium status. Payment successful #{current_user.email}. Thank you."
     else
       flash[:notice] = "Payment received but we ran into an error with our database. Please contact support."
@@ -44,7 +44,7 @@ class ChargesController < ApplicationController
 
 
   def downgrade
-    if downgrade_to_standard
+    if User.downgrade(current_user)
       flash[:notice] = "Account downgraded, #{current_user.email}. Thank you."
     else
       flash[:notice] = "Partial refund granted but database error occurred. Please contact support."
