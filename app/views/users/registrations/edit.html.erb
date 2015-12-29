@@ -40,7 +40,7 @@
 <% if @user.premium? %>
   <h3>Downgrade my account</h3>
   <p>Go. Be free.
-  <%= link_to 'Downgrade', downgrade_path, class: "button tiny warning" %>
+  <%= link_to 'Downgrade', downgrade_path, method: :post, class: "button tiny warning" %>
   </p>
 <% elsif @user.standard? %>
   <h3>Upgrade my account</h3>

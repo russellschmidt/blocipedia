@@ -14,4 +14,12 @@ class User < ActiveRecord::Base
     self.role ||= 'standard'
   end
 
+  def self.upgrade(user)
+    user.premium! ? true : false
+  end
+
+  def self.downgrade(user)
+    user.standard! ? true : false
+  end
+
 end
