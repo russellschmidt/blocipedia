@@ -5,7 +5,11 @@ class WikisController < ApplicationController
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def index
-    @wikis = Wiki.all
+    if current_user.standard?
+      @wikis = Wiki.where(private: false)
+    else
+      @wikis = Wiki.all
+    end
   end
 
   def show
@@ -17,13 +21,17 @@ class WikisController < ApplicationController
 
   def create
     @wiki = Wiki.new(wiki_params.merge(user_id: current_user.id))
-
-    if @wiki.save
-      flash[:notice] = "Wiki saved"
-      redirect_to @wiki
-    else
-      flash.now[:alert] = "Error saving your wiki occurred! Try again"
+    if @wiki.private && current_user.standard?
+      flash.now[:alert] = "Free users can't make private wikis :("
       render :new
+    else
+      if @wiki.save
+        flash[:notice] = "Wiki saved"
+        redirect_to @wiki
+      else
+        flash.now[:alert] = "Error saving your wiki occurred! Try again"
+        render :new
+      end
     end
   end
 
@@ -32,13 +40,17 @@ class WikisController < ApplicationController
 
   def update
     @wiki.update_attributes(wiki_params)
-
-    if @wiki.save
-      flash[:notice] = "Wiki was updated"
-      redirect_to @wiki
-    else
-      flash.now[:alert] = "Error saving your wiki - plz try again"
+    if @wiki.private && current_user.standard?
+      flash.now[:alert] = "Free users can't make private wikis :("
       render :edit
+    else
+      if @wiki.save
+        flash[:notice] = "Wiki was updated"
+        redirect_to @wiki
+      else
+        flash.now[:alert] = "Error saving your wiki - plz try again"
+        render :edit
+      end
     end
   end
 
