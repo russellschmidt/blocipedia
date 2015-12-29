@@ -1,11 +1,14 @@
 class ChargesController < ApplicationController
+  include Premium
   before_action :authenticate_user!, only: [:new, :create, :downgrade]
 
   def new
     @stripe_btn_data = {
       key: "#{ Rails.configuration.stripe[:publishable_key] }",
-      description: "Blocipedia Premium for #{current_user.email}",
-      amount: 1500
+      description: "Premium Upgrade for #{current_user.email}",
+      # the following action is not passing spec tests, undefined method `description' for Premium:Module
+      # description: Premium::description(current_user.email),
+      amount: Premium::AMOUNT
     }
   end
 
@@ -19,9 +22,9 @@ class ChargesController < ApplicationController
       # this is the Stripe customer object ID
       customer: customer.id,
       # must be in cents
-      amount: 1500,
-      description: "Blocipedia Premium for #{current_user.email}",
-      currency: 'usd'
+      amount: Premium::AMOUNT,
+      description: Premium::description(current_user.email),
+      currency: Premium::CURRENCY
     )
 
     # change user to premium
