@@ -23,7 +23,9 @@ class ChargesController < ApplicationController
       customer: customer.id,
       # must be in cents
       amount: Premium::AMOUNT,
-      description: Premium::description(current_user.email),
+      description: "Premium Upgrade for #{current_user.email}",
+      # the following action is not passing spec tests, undefined method `description' for Premium:Module
+      # description: Premium::description(current_user.email),
       currency: Premium::CURRENCY
     )
 
