@@ -7,4 +7,10 @@ class Wiki < ActiveRecord::Base
       wiki.save
     end
   end
+
+  def self.markdowner(input)
+    renderer = Redcarpet::Render::HTML(safe_links_only: true, hard_wrap: true)
+    markdown = Redcarpet::Markdown.new(renderer, fenced_code_blocks: true, autolink: true, underline: true, highlight: true)
+    markdown.render(input)
+  end
 end
