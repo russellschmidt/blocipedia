@@ -55,3 +55,4 @@ gem 'stripe'
 gem 'figaro', '~>1.0'
 
 gem 'stripe-ruby-mock', '~> 2.2.1', require: 'stripe_mock'
+gem 'redcarpet'

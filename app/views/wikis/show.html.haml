@@ -3,8 +3,7 @@
     %h1
       = @wiki.title
   .row
-    %p
-      = @wiki.body
+    = Wiki.markdowner(@wiki.body).html_safe
   .row
     .small-2.columns
       %h5
