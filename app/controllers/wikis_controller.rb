@@ -13,6 +13,10 @@ class WikisController < ApplicationController
   end
 
   def show
+    if @wiki.private && current_user.standard?
+      flash.now[:alert] = "Free users can't make private wikis :("
+      render :index
+    end
   end
 
   def new

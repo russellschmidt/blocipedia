@@ -4,9 +4,8 @@ include RandomData
 RSpec.describe WikisController, type: :controller do
   let(:my_user) {create(:standard_user)}
   let(:my_wiki) {create(:public_wiki, user: my_user)}
-
-  #let(:my_user) {User.create!(email:"new_user@aol.com", password:"password", role: "standard", confirmed_at: Time.now)}
-  #let(:my_wiki) {Wiki.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user)}
+  let(:premium_user) {create(:premium_user)}
+  let(:private_wiki) {create(:private_wiki, user: premium_user, private: true)}
 
   before(:each) do
       @request.env["devise.mapping"] = Devise.mappings[:user]
@@ -16,22 +15,19 @@ RSpec.describe WikisController, type: :controller do
   describe "user logins" do
     it "can sign up and create an account" do
       expect { post :create, user: my_user }.to change(User, :count).by(1)
-      # not nil
-      # database size  +1
     end
 
     it "can sign in and create a session" do
       sign_in my_user
       expect(subject.current_user[:id]).to eq (my_user.id)
-      # current_user eq my_user
-      # subject.current_user
-      # also redirect to index
     end
   end
-
   # End TODO ##########
 
   describe "GET #index" do
+    before(:each) do
+      sign_in my_user
+    end
     it "returns http success" do
       get :index
       expect(response).to have_http_status(:success)
@@ -44,26 +40,63 @@ RSpec.describe WikisController, type: :controller do
   end
 
   describe "GET #show" do
-    it "returns http success" do
-      get :show, {id: my_wiki.id}
-      expect(response).to have_http_status(:success)
+    context "user is standard user" do
+      before(:each) do
+        sign_in my_user
+      end
+
+      it "returns http success" do
+        get :show, {id: my_wiki.id}
+        expect(response).to have_http_status(:success)
+      end
+
+      it "renders the #show view" do
+        get :show, {id: my_wiki.id}
+        expect(response).to render_template :show
+      end
+
+      it "assigns my_wiki to @wiki" do
+        get :show, {id: my_wiki.id}
+        expect(assigns(:wiki)).to eq(my_wiki)
+      end
+
+      it "get redirected if they attempt to see a private wiki" do
+        get :show, {id: private_wiki.id}
+        expect(response).to render_template :index
+      end
     end
 
-    it "renders the #show view" do
-      get :show, {id: my_wiki.id}
-      expect(response).to render_template :show
-    end
-
-    it "assigns my_wiki to @wiki" do
-      get :show, {id: my_wiki.id}
-      expect(assigns(:wiki)).to eq(my_wiki)
+    context "user is premium user" do
+      before(:each) do
+        sign_in premium_user
+      end
+      it "can see a private wiki" do
+        get :show, {id: private_wiki.id}
+        expect(response).to have_http_status(:success)
+      end
     end
   end
 
   describe "GET #new" do
-    context "for signed in user" do
+    context "for signed in standard user" do
       before(:each) do
         sign_in my_user
+      end
+
+      it "returns http success" do
+        get :new
+        expect(response).to have_http_status(:success)
+      end
+
+      it "renders the #new view" do
+        get :new
+        expect(response).to render_template :new
+      end
+    end
+
+    context "for signed in premium user" do
+      before(:each) do
+        sign_in premium_user
       end
 
       it "returns http success" do
@@ -86,7 +119,7 @@ RSpec.describe WikisController, type: :controller do
   end
 
   describe "POST create" do
-    context "for signed in user" do
+    context "for signed in standard user" do
       before(:each) do
         sign_in my_user
       end
@@ -104,6 +137,30 @@ RSpec.describe WikisController, type: :controller do
         post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: false, user: my_user}
         expect(response).to redirect_to Wiki.last
       end
+
+      it "does not save a private wiki" do
+        expect{post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: true, user: my_user}}.to change(Wiki, :count).by(0)
+      end
+    end
+
+    context "for signed in premium user creating private wikis" do
+      before(:each) do
+        sign_in premium_user
+      end
+
+      it "increases the number of wikis by 1" do
+        expect{post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: true, user: premium_user}}.to change(Wiki, :count).by(1)
+      end
+
+      it "assigns the new wiki to @wiki" do
+        post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: true, user: premium_user}
+        expect(assigns(:wiki)).to eq Wiki.last
+      end
+
+      it "redirects to the new wiki" do
+        post :create, wiki: {title: RandomData.random_sentence, body: RandomData.random_paragraph, private: true, user: premium_user}
+        expect(response).to redirect_to Wiki.last
+      end
     end
 
     context "for non-signed-in (unauthorized) user" do
@@ -116,6 +173,10 @@ RSpec.describe WikisController, type: :controller do
 
 
   describe "GET #edit" do
+    before(:each) do
+      sign_in my_user
+    end
+
     it "returns http success" do
       get :edit, {id: my_wiki.id}
       expect(response).to have_http_status(:success)
@@ -137,28 +198,53 @@ RSpec.describe WikisController, type: :controller do
   end
 
   describe "PUT update" do
-    it "updates wiki with expected attributes" do
-      new_title = RandomData.random_sentence
-      new_body = RandomData.random_paragraph
-      new_private = true
-      #new_user = my_user
-      put :update, id: my_wiki.id, wiki: {title: new_title, body: new_body, private: new_private}
+    context "signed in standard user" do
+      before(:each) do
+        sign_in my_user
+      end
 
-      updated_wiki = assigns(:wiki)
-      expect(updated_wiki.id).to eq my_wiki.id
-      expect(updated_wiki.title).to eq new_title
-      expect(updated_wiki.body).to eq new_body
-      expect(updated_wiki.private).to eq new_private
-      #expect(updated_wiki.user.id).to eq new_user.id
+      it "updates wiki with expected attributes" do
+        new_title = RandomData.random_sentence
+        new_body = RandomData.random_paragraph
+        new_private = false
+        put :update, id: my_wiki.id, wiki: {title: new_title, body: new_body, private: new_private}
+
+        updated_wiki = assigns(:wiki)
+        expect(updated_wiki.id).to eq my_wiki.id
+        expect(updated_wiki.title).to eq new_title
+        expect(updated_wiki.body).to eq new_body
+        expect(updated_wiki.private).to eq new_private
+      end
+
+      it "cannot save private wikis" do
+        new_title = RandomData.random_sentence
+        new_body = RandomData.random_paragraph
+        put :update, id: my_wiki.id, wiki: {title: new_title, body: new_body, private: true}
+
+        expect(my_wiki.private).to eq false
+      end
+
+      it "redirects private posts to edit template" do
+        new_title = RandomData.random_sentence
+        new_body = RandomData.random_paragraph
+        new_private = true
+        put :update, id: my_wiki.id, wiki: {title: new_title, body: new_body, private: new_private}
+        expect(response).to render_template :edit
+      end
     end
 
-    it "redirects to the updated post" do
-      new_title = RandomData.random_sentence
-      new_body = RandomData.random_paragraph
-      new_private = true
-      #new_user = my_user
-      put :update, id: my_wiki.id, wiki: {title: new_title, body: new_body, private: new_private}
-      expect(response).to redirect_to my_wiki
+    context "signed in premium user" do
+      before(:each) do
+        sign_in premium_user
+      end
+
+      it "can save private wikis" do
+        new_title = RandomData.random_sentence
+        new_body = RandomData.random_paragraph
+        put :update, id: private_wiki.id, wiki: {title: new_title, body: new_body, private: true}
+
+        expect(private_wiki.private).to eq true
+      end
     end
   end
 
