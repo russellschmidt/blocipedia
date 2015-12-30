@@ -6,7 +6,7 @@
     .row
       = f.label :body
       = f.text_area :body, placeholder: "The wiki content goes here."
-    - if User.find(wiki.user_id).admin? || User.find(wiki.user_id).premium?
+    - if current_user.admin? || current_user.premium?
       .row
         = f.label :private
         = f.check_box :private
