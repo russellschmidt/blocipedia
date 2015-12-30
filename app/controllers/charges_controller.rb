@@ -42,9 +42,9 @@ class ChargesController < ApplicationController
     redirect_to new_charge_path
   end
 
-
   def downgrade
     if User.downgrade(current_user)
+      Wiki.unprivate(current_user)
       flash[:notice] = "Account downgraded, #{current_user.email}. Thank you."
     else
       flash[:notice] = "Partial refund granted but database error occurred. Please contact support."
