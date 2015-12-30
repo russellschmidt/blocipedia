@@ -56,15 +56,3 @@ class ChargesController < ApplicationController
     redirect_to edit_user_registration_path
   end
 end
-
-
-private
-def upgrade_to_premium
-  user = User.find(current_user.id)
-  user.premium! ? true : false
-end
-
-def downgrade_to_standard
-  user = User.find(current_user.id)
-  user.standard! ? true : false
-end
