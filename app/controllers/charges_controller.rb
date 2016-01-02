@@ -1,14 +1,14 @@
 class ChargesController < ApplicationController
-  include Premium
+  include Plans::Premium
   before_action :authenticate_user!, only: [:new, :create, :downgrade]
 
   def new
     @stripe_btn_data = {
       key: "#{ Rails.configuration.stripe[:publishable_key] }",
-      description: "Premium Upgrade for #{current_user.email}",
+      description: charge_description,
       # the following action is not passing spec tests, undefined method `description' for Premium:Module
       # description: Premium::description(current_user.email),
-      amount: Premium::AMOUNT
+      amount: AMOUNT
     }
   end
 
@@ -22,15 +22,15 @@ class ChargesController < ApplicationController
       # this is the Stripe customer object ID
       customer: customer.id,
       # must be in cents
-      amount: Premium::AMOUNT,
-      description: "Premium Upgrade for #{current_user.email}",
+      amount: AMOUNT,
+      description: charge_description,
       # the following action is not passing spec tests, undefined method `description' for Premium:Module
       # description: Premium::description(current_user.email),
-      currency: Premium::CURRENCY
+      currency: CURRENCY
     )
 
     # change user to premium
-    if User.upgrade(current_user)
+    if current_user.upgrade
       flash[:notice] = "Welcome to Premium status. Payment successful #{current_user.email}. Thank you."
     else
       flash[:notice] = "Payment received but we ran into an error with our database. Please contact support."
@@ -43,11 +43,15 @@ class ChargesController < ApplicationController
   end
 
   def downgrade
-    if User.downgrade(current_user)
-      Wiki.unprivate(current_user)
+    if current_user.downgrade
+    #if User.downgrade(current_user)
+      current_user.wikis.each do |wiki|
+        wiki.make_public
+      end
+
       flash[:notice] = "Account downgraded, #{current_user.email}. Thank you."
     else
-      flash[:notice] = "Partial refund granted but database error occurred. Please contact support."
+      flash[:notice] = "Database error occurred. Please contact support."
     end
     redirect_to wikis_path
 
