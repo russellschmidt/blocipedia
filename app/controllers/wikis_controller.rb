@@ -44,6 +44,8 @@ class WikisController < ApplicationController
 
   def update
     @wiki.update_attributes(wiki_params)
+
+
     if @wiki.private && current_user.standard?
       flash.now[:alert] = "Free users can't make private wikis :("
       render :edit
