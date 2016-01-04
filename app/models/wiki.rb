@@ -14,5 +14,11 @@ class Wiki < ActiveRecord::Base
     markdown.render(input)
   end
 
-  
+  def add_collab
+    
+  end
+
+  def rem_collab
+
+  end
 end

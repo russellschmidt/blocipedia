@@ -1,6 +1,6 @@
 class WikisController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :destroy]
-  before_action :ready_wiki, only: [:show, :edit, :update, :destroy]
+  before_action :ready_wiki, only: [:show, :edit, :update, :destroy, :addCollaborator, :removeCollaborator]
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
@@ -72,11 +72,13 @@ class WikisController < ApplicationController
   end
 
   def addCollaborator
-    redirect_to wikis_path
+    add_collab
+    redirect_to edit_wiki_path(@wiki)
   end
 
   def removeCollaborator
-    redirect_to wikis_path
+    remove_collab
+    redirect_to edit_wiki_path(@wiki)
   end
 
 

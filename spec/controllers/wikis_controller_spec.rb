@@ -201,14 +201,14 @@ RSpec.describe WikisController, type: :controller do
         sign_in premium_user
       end
 
-      it "addCollaborator redirects to index" do
+      it "addCollaborator redirects to edit for this wiki" do
         put :addCollaborator, {id: private_wiki}
-        expect(response).to redirect_to wikis_path
+        expect(response).to redirect_to(edit_wiki_path)
       end
 
-      it "removeCollaborator redirects to index" do
+      it "removeCollaborator redirects to edit for this wiki" do
         put :addCollaborator, {id: private_wiki}
-        expect(response).to redirect_to wikis_path
+        expect(response).to redirect_to(edit_wiki_path)
       end
     end
   end
