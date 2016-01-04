@@ -72,12 +72,12 @@ class WikisController < ApplicationController
   end
 
   def addCollaborator
-    add_collab
+    @wiki.add_collab
     redirect_to edit_wiki_path(@wiki)
   end
 
   def removeCollaborator
-    remove_collab
+    @wiki.remove_collab
     redirect_to edit_wiki_path(@wiki)
   end
 
