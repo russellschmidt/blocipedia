@@ -5,14 +5,11 @@
   .row
     %h4 Current Collaborators
     - @wiki.collaborators.each do |collaborator|
-      %ul
-        %li #{collaborator.email}
+      .row
+        = link_to "remove #{collaborator.email}", remove_collaborator_wiki_path(wiki_id: @wiki.id, collaborator_id: collaborator.id), method: :delete, class: "button tiny alert"
   .row
     %h4 Add Collaborators
     - @users.each do |user|
-      .row
-        .column.small-1
-        .column.small-11
-          = user.email
-          = link_to "add", add_collaborator_wiki_path(wiki_id: @wiki.id, collaborator_id: user.id), method: :put, class: "button tiny success"
-          = link_to "remove", remove_collaborator_wiki_path(wiki_id: @wiki.id, collaborator_id: user.id), method: :delete, class: "button tiny alert"
+      - unless @wiki.collaborators.include? user
+        .row
+          = link_to "add #{user.email}", add_collaborator_wiki_path(wiki_id: @wiki.id, collaborator_id: user.id), method: :put, class: "button tiny success"
