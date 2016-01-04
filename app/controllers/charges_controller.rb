@@ -44,7 +44,6 @@ class ChargesController < ApplicationController
 
   def downgrade
     if current_user.downgrade
-    #if User.downgrade(current_user)
       current_user.wikis.each do |wiki|
         wiki.make_public
       end

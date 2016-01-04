@@ -195,6 +195,22 @@ RSpec.describe WikisController, type: :controller do
       expect(wiki_instance.body).to eq my_wiki.body
       expect(wiki_instance.private).to eq my_wiki.private
     end
+
+    context "signed in premium user" do
+      before(:each) do
+        sign_in premium_user
+      end
+
+      it "addCollaborator redirects to index" do
+        put :addCollaborator, {id: private_wiki}
+        expect(response).to redirect_to wikis_path
+      end
+
+      it "removeCollaborator redirects to index" do
+        put :addCollaborator, {id: private_wiki}
+        expect(response).to redirect_to wikis_path
+      end
+    end
   end
 
   describe "PUT update" do

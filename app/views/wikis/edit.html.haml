@@ -1,3 +1,18 @@
 .row
   %h1 Edit Wiki
 =render partial: "form", locals: {wiki: @wiki}
+- if @wiki.private
+  .row
+    %h4 Current Collaborators
+    - @wiki.collaborators.each do |collaborator|
+      %ul
+        %li #{collaborator.email}
+  .row
+    %h4 Add Collaborators
+    - @users.each do |user|
+      .row
+        .column.small-1
+        .column.small-11
+          = user.email
+          = link_to "add", addCollaborator_path(@wiki), method: :put, class: "button tiny success"
+          = link_to "remove", removeCollaborator_path(@wiki), method: :put, class: "button tiny alert"

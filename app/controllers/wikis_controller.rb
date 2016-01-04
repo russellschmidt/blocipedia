@@ -40,11 +40,11 @@ class WikisController < ApplicationController
   end
 
   def edit
+    @users =  User.all
   end
 
   def update
     @wiki.update_attributes(wiki_params)
-
 
     if @wiki.private && current_user.standard?
       flash.now[:alert] = "Free users can't make private wikis :("
@@ -69,6 +69,14 @@ class WikisController < ApplicationController
       flash.now[:alert] = "There was an error deleting the wiki"
       render :show
     end
+  end
+
+  def addCollaborator
+    redirect_to wikis_path
+  end
+
+  def removeCollaborator
+    redirect_to wikis_path
   end
 
 

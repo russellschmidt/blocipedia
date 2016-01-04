@@ -13,4 +13,6 @@ class Wiki < ActiveRecord::Base
     markdown = Redcarpet::Markdown.new(renderer, fenced_code_blocks: true, autolink: true, underline: true, highlight: true)
     markdown.render(input)
   end
+
+  
 end
