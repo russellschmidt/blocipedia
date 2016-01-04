@@ -5,7 +5,7 @@ RSpec.describe WikisController, type: :controller do
   let(:my_user) {create(:standard_user)}
   let(:my_wiki) {create(:public_wiki, user: my_user)}
   let(:premium_user) {create(:premium_user)}
-  let(:private_wiki) {create(:private_wiki, user: premium_user, private: true)}
+  let(:private_wiki) {create(:private_wiki, user: premium_user)}
 
   before(:each) do
       @request.env["devise.mapping"] = Devise.mappings[:user]
@@ -28,6 +28,7 @@ RSpec.describe WikisController, type: :controller do
     before(:each) do
       sign_in my_user
     end
+
     it "returns http success" do
       get :index
       expect(response).to have_http_status(:success)
@@ -196,19 +197,33 @@ RSpec.describe WikisController, type: :controller do
       expect(wiki_instance.private).to eq my_wiki.private
     end
 
-    context "signed in premium user" do
+    context "signed in premium author of wiki" do
       before(:each) do
         sign_in premium_user
       end
 
-      it "addCollaborator redirects to edit for this wiki" do
-        put :addCollaborator, {id: private_wiki}
+      it "add_collaborator redirects to edit for this wiki" do
+        put :add_collaborator, {collaborator_id: premium_user.id, wiki: private_wiki}
         expect(response).to redirect_to(edit_wiki_path)
       end
 
-      it "removeCollaborator redirects to edit for this wiki" do
-        put :addCollaborator, {id: private_wiki}
+      it "remove_collaborator redirects to edit for this wiki" do
+        delete :remove_collaborator, {collaborator_id: premium_user.id, wiki: private_wiki}
         expect(response).to redirect_to(edit_wiki_path)
+      end
+    end
+
+    context "signed in premium collaborator of wiki" do
+      let(:new_premium_user) {create(:premium_user)}
+      let(:new_private_wiki) {create(:private_wiki, user: new_premium_user)}
+      let(:collab) {Collaboration.new(collaborator_id: premium_user.id, wiki: new_private_wiki)}
+      before(:each) do
+        sign_in premium_user
+      end
+
+      it "should be able to edit a wiki they are a collaborator on" do
+        get :edit, {id: new_private_wiki.id}
+        expect(response).to have_http_status(:success)
       end
     end
   end
