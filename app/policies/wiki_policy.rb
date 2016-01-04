@@ -52,4 +52,42 @@ class WikiPolicy < ApplicationPolicy
       scope
     end
   end
+
+  class Scope
+    attr_reader :user, :scope
+
+    def initialize(user, scope)
+      @user = user
+      @scope = scope
+    end
+
+    def resolve
+      wikis = []
+      if user.nil?  # guest user
+        all_wikis = scope.all
+        all_wikis.each do |wiki|
+          if !(wiki.private)
+            wikis << wiki
+          end
+        end
+      elsif user.admin?
+        wikis = scope.all
+      elsif user.premium?
+        all_wikis = scope.all
+        all_wikis.each do |wiki|
+          if !(wiki.private) || wiki.user == user || wiki.collaborators.include?(user)
+            wikis << wiki
+          end
+        end
+      else
+        all_wikis = scope.all
+        all_wikis.each do |wiki|
+          if !(wiki.private) || wiki.collaborators.include?(user)
+            wikis << wiki
+          end
+        end
+      end
+      wikis ### we return this array of wikis that the user can view
+    end
+  end
 end
