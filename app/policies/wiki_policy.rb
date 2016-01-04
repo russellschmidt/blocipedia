@@ -39,7 +39,7 @@ class WikiPolicy < ApplicationPolicy
   def scope
     Pundit.policy_scope!(user, record.class)
   end
-
+=begin
   class Scope
     attr_reader :user, :scope
 
@@ -52,7 +52,7 @@ class WikiPolicy < ApplicationPolicy
       scope
     end
   end
-
+=end
   class Scope
     attr_reader :user, :scope
 
