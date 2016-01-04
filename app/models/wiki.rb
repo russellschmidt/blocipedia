@@ -14,11 +14,13 @@ class Wiki < ActiveRecord::Base
     markdown.render(input)
   end
 
-  def add_collab
-    
+  def add_collab(collaborator_id)
+    collaboration = Collaboration.new(collaborator_id: collaborator_id, wiki: self)
+    collaboration.save
   end
 
-  def rem_collab
-
+  def remove_collab(collaborator_id)
+    collaboration = Collaboration.where(collaborator_id: collaborator_id, wiki: self)
+    Collaboration.destroy(collaboration[0].id)
   end
 end

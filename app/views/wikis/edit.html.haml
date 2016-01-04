@@ -14,5 +14,5 @@
         .column.small-1
         .column.small-11
           = user.email
-          = link_to "add", addCollaborator_path(@wiki), method: :put, class: "button tiny success"
-          = link_to "remove", removeCollaborator_path(@wiki), method: :put, class: "button tiny alert"
+          = link_to "add", add_collaborator_wiki_path(wiki_id: @wiki.id, collaborator_id: user.id), method: :put, class: "button tiny success"
+          = link_to "remove", remove_collaborator_wiki_path(wiki_id: @wiki.id, collaborator_id: user.id), method: :delete, class: "button tiny alert"
