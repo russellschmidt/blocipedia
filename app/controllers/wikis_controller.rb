@@ -1,15 +1,16 @@
 class WikisController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :destroy]
-  before_action :ready_wiki, only: [:show, :edit, :update, :destroy]
+  before_action :ready_wiki, only: [:show, :edit, :update, :destroy, :add_collaborator, :remove_collaborator]
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def index
-    if current_user.standard?
-      @wikis = Wiki.where(private: false)
-    else
-      @wikis = Wiki.all
-    end
+    @wikis = policy_scope(Wiki)
+    #if current_user.standard?
+    #  @wikis = Wiki.where(private: false)
+    #else
+    #  @wikis = Wiki.all
+    #end
   end
 
   def show
@@ -40,10 +41,12 @@ class WikisController < ApplicationController
   end
 
   def edit
+    @users =  User.all
   end
 
   def update
     @wiki.update_attributes(wiki_params)
+
     if @wiki.private && current_user.standard?
       flash.now[:alert] = "Free users can't make private wikis :("
       render :edit
@@ -67,6 +70,16 @@ class WikisController < ApplicationController
       flash.now[:alert] = "There was an error deleting the wiki"
       render :show
     end
+  end
+
+  def add_collaborator
+    @wiki.add_collab(params[:collaborator_id])
+    redirect_to edit_wiki_path(@wiki)
+  end
+
+  def remove_collaborator
+    @wiki.remove_collab(params[:collaborator_id])
+    redirect_to edit_wiki_path(@wiki)
   end
 
 
