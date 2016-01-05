@@ -35,6 +35,8 @@ RSpec.describe WikisController, type: :controller do
     end
 
     it "assigns my_wiki to @wikis" do
+      my_wiki
+      
       get :index
       expect(assigns(:wikis)).to eq([my_wiki])
     end

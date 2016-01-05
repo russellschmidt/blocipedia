@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Collaborator, type: :model do
+RSpec.describe Collaboration, type: :model do
   let(:premium_user) {create(:premium_user)}
   let(:private_wiki) {create(:private_wiki, user: premium_user)}
   let(:collaborator) {create(:collaborator, wiki: private_wiki)}
