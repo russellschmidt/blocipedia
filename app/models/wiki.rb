@@ -8,19 +8,13 @@ class Wiki < ActiveRecord::Base
     self.save
   end
 
-  def self.markdowner(input)
-    renderer = Redcarpet::Render::HTML.new(safe_links_only: true, hard_wrap: true)
-    markdown = Redcarpet::Markdown.new(renderer, fenced_code_blocks: true, autolink: true, underline: true, highlight: true)
-    markdown.render(input)
-  end
-
   def add_collab(collaborator_id)
-    collaboration = Collaboration.new(collaborator_id: collaborator_id, wiki: self)
-    collaboration.save
+    collab = Collaboration.new(collaborator_id: collaborator_id, wiki: self)
+    collab.save
   end
 
   def remove_collab(collaborator_id)
-    collaboration = Collaboration.where(collaborator_id: collaborator_id, wiki: self)
-    Collaboration.destroy(collaboration[0].id)
+    collab = Collaboration.where(collaborator_id: collaborator_id, wiki: self)
+    Collaboration.destroy(collab[0].id)
   end
 end
