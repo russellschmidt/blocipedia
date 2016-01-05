@@ -1,4 +1,7 @@
 class Wiki < ActiveRecord::Base
+  extend FriendlyId
+  friendly_id :title, use: [:slugged, :finders]
+
   belongs_to :user
   has_many :collaborations
   has_many :collaborators, through: :collaborations
@@ -17,4 +20,5 @@ class Wiki < ActiveRecord::Base
     collab = Collaboration.where(collaborator_id: collaborator_id, wiki: self)
     Collaboration.destroy(collab[0].id)
   end
+
 end

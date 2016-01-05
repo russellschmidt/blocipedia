@@ -6,11 +6,6 @@ class WikisController < ApplicationController
 
   def index
     @wikis = policy_scope(Wiki)
-    #if current_user.standard?
-    #  @wikis = Wiki.where(private: false)
-    #else
-    #  @wikis = Wiki.all
-    #end
   end
 
   def show
@@ -26,6 +21,7 @@ class WikisController < ApplicationController
 
   def create
     @wiki = Wiki.new(wiki_params.merge(user_id: current_user.id))
+    #@wiki.slug = @wiki.friendly_id
     if @wiki.private && current_user.standard?
       flash.now[:alert] = "Free users can't make private wikis :("
       render :new
