@@ -36,7 +36,7 @@ RSpec.describe WikisController, type: :controller do
 
     it "assigns my_wiki to @wikis" do
       my_wiki
-      
+
       get :index
       expect(assigns(:wikis)).to eq([my_wiki])
     end
@@ -175,23 +175,23 @@ RSpec.describe WikisController, type: :controller do
   end
 
 
-  describe "GET #edit" do
+  describe "PUT #edit" do
     before(:each) do
       sign_in my_user
     end
 
     it "returns http success" do
-      get :edit, {id: my_wiki.id}
+      put :edit, {id: my_wiki.id}
       expect(response).to have_http_status(:success)
     end
 
     it "renders the #edit view" do
-      get :edit, {id: my_wiki.id}
+      put :edit, {id: my_wiki.id}
       expect(response).to render_template :edit
     end
 
     it "assigns wiki to be updated to @wiki" do
-      get :edit, {id: my_wiki.id}
+      put :edit, {id: my_wiki.id}
       wiki_instance = assigns(:wiki)
       expect(wiki_instance.id).to eq my_wiki.id
       expect(wiki_instance.title).to eq my_wiki.title
@@ -202,15 +202,18 @@ RSpec.describe WikisController, type: :controller do
     context "signed in premium author of wiki" do
       before(:each) do
         sign_in premium_user
+        private_wiki.save
+        @collab = Collaboration.new(collaborator_id: my_user.id, wiki: private_wiki)
+        @collab.save
       end
 
       it "add_collaborator redirects to edit for this wiki" do
-        put :add_collaborator, {collaborator_id: premium_user.id, wiki: private_wiki}
+        post :add_collaborator, {id: @collab.id, collaborator_id: my_user.id, wiki: private_wiki}
         expect(response).to redirect_to(edit_wiki_path)
       end
 
       it "remove_collaborator redirects to edit for this wiki" do
-        delete :remove_collaborator, {collaborator_id: premium_user.id, wiki: private_wiki}
+        delete :remove_collaborator, {id: @collab.id, collaborator_id: my_user.id, wiki: private_wiki}
         expect(response).to redirect_to(edit_wiki_path)
       end
     end
@@ -218,13 +221,13 @@ RSpec.describe WikisController, type: :controller do
     context "signed in premium collaborator of wiki" do
       let(:new_premium_user) {create(:premium_user)}
       let(:new_private_wiki) {create(:private_wiki, user: new_premium_user)}
-      let(:collab) {Collaboration.new(collaborator_id: premium_user.id, wiki: new_private_wiki)}
+      let(:collaboration) {create(:collaboration, collaborator_id: premium_user.id, wiki: new_private_wiki)}
       before(:each) do
         sign_in premium_user
       end
 
       it "should be able to edit a wiki they are a collaborator on" do
-        get :edit, {id: new_private_wiki.id}
+        put :edit, {id: new_private_wiki.id}
         expect(response).to have_http_status(:success)
       end
     end
