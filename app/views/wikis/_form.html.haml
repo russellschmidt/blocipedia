@@ -14,3 +14,37 @@
     .row
       = f.submit "Save", class: "button info"
       = link_to "Cancel", wikis_path, class: "button"
+:javascript
+  $(document).ready( function() {
+    var options = { container: 'epiceditor'
+          , basePath: '/app/assets'
+          , textarea: 'content-input'
+          , clientSideStorage: true
+          , localStorageName: 'epiceditor'
+          , useNativeFullscreen: true
+          , file: { name: null
+          , defaultContent: ''
+            , autoSave: 100 // Set to false for no auto saving
+            }
+          , theme: { base: '/epiceditor.css'
+            , preview: '/github.css'
+            , editor: '/epic-style.css'
+            }
+          , focusOnLoad: false
+          , shortcut: { modifier: 18 // alt keycode
+            , fullscreen: 70 // f keycode
+            , preview: 80 // p keycode
+            }
+          , string: { togglePreview: 'Toggle Preview Mode'
+            , toggleEdit: 'Toggle Edit Mode'
+            , toggleFullscreen: 'Enter Fullscreen'
+            }
+          , parser: typeof marked == 'function' ? marked : null
+          , autogrow: false
+          , button: { fullscreen: true
+            , preview: true
+            , bar: true
+            }
+          }
+  var editor = new EpicEditor(options).load();
+  });

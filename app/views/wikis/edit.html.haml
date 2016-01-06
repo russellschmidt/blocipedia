@@ -15,5 +15,3 @@
         .row
           = link_to "add", add_collaborator_wiki_path(wiki_id: @wiki.id, collaborator_id: user.id), method: :post, class: "button tiny success"
           = user.email
-%script
-  {type: "text/javascript"} var editor = new EpicEditor().load();
