@@ -14,4 +14,5 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require foundation
+//= require epiceditor.js
 //= require blocipedia.js

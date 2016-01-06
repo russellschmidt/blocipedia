@@ -1,3 +1,5 @@
 .row
   %h1.title New Wiki
 =render partial: "form", locals: {wiki: @wiki}
+%script
+  {type: "text/javascript"} var editor = new EpicEditor().load();

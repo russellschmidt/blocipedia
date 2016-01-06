@@ -5,7 +5,8 @@
       = f.text_field :title, placeholder: "The Wiki Title"
     .row
       = f.label :body
-      = f.text_area :body, placeholder: "The wiki content goes here."
+      #epiceditor
+        = f.text_area :body, placeholder: "The wiki content goes here.", id: "content-input"
     - if current_user.admin? || current_user.premium?
       .row
         = f.label :private
