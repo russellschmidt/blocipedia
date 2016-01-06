@@ -5,7 +5,7 @@
       = f.text_field :title, placeholder: "The Wiki Title"
     .row
       = f.label :body
-      = f.text_area :body, placeholder: "The wiki content goes here."
+      = f.text_area :body, placeholder: "The wiki content goes here.", id: "my-edit-area"
     - if current_user.admin? || current_user.premium?
       .row
         = f.label :private
@@ -13,3 +13,4 @@
     .row
       = f.submit "Save", class: "button info"
       = link_to "Cancel", wikis_path, class: "button"
+#epiceditor
