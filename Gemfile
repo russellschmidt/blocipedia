@@ -58,3 +58,5 @@ gem 'stripe-ruby-mock', '~> 2.2.1', require: 'stripe_mock'
 gem 'redcarpet'
 
 gem 'friendly_id', '~> 5.1.0'
+
+gem 'epiceditor', '~> 0.2.2.2'
