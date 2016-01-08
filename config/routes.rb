@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount EpicEditor::Engine => "/"
   resources :wikis do
     member do
       post :add_collaborator
